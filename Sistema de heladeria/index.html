@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Heladería Tecnológica</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background: linear-gradient(to right, #f8e8d6, #c3cbe5);
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .contenedor {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 4px 6px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+    }
+    .titulo {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+    .boton-sabor, .metodo-pago {
+      margin: 5px;
+    }
+    .boton-sabor.activo, .metodo-pago.activo {
+      background-color: #28a745 !important;
+      color: white;
+    }
+    .boton-sabor:hover, .metodo-pago:hover {
+      cursor: pointer;
+      transform: scale(1.05);
+    }
+    .ruleta {
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Encabezado -->
+    <h1 class="titulo">Heladería Tecnológica</h1>
+
+    <!-- Sección Sabores -->
+    <div class="contenedor">
+      <h4>Selecciona tus sabores:</h4>
+      <div id="sabores">
+        <button class="btn btn-outline-success boton-sabor" onclick="seleccionarSabor(this, 'Chocolate')">Chocolate</button>
+        <button class="btn btn-outline-success boton-sabor" onclick="seleccionarSabor(this, 'Vainilla')">Vainilla</button>
+        <button class="btn btn-outline-success boton-sabor" onclick="seleccionarSabor(this, 'Frutilla')">Frutilla</button>
+        <button class="btn btn-outline-success boton-sabor" onclick="seleccionarSabor(this, 'Dulce de Leche')">Dulce de Leche</button>
+        <button class="btn btn-outline-success boton-sabor" onclick="seleccionarSabor(this, 'Limón')">Limón</button>
+      </div>
+      <p id="saboresSeleccionados">Sabores seleccionados: Ninguno</p>
+    </div>
+
+    <!-- Sección Tamaño -->
+    <div class="contenedor">
+      <h4>Opciones de Compra:</h4>
+      <label for="tamaño">Tamaño:</label>
+      <select id="tamaño" class="form-control">
+        <option value="">Selecciona un tamaño</option>
+        <option value="Bocha - $100">Bocha - $100</option>
+        <option value="Cuarto - $200">Cuarto - $200</option>
+        <option value="Medio - $350">Medio - $350</option>
+        <option value="Kilo - $600">Kilo - $600</option>
+      </select>
+    </div>
+
+    <!-- Sección Método de Pago -->
+    <div class="contenedor">
+      <h4>Método de Pago:</h4>
+      <button class="btn btn-outline-success metodo-pago" onclick="seleccionarMetodo(this, 'Débito')">Débito</button>
+      <button class="btn btn-outline-success metodo-pago" onclick="seleccionarMetodo(this, 'Efectivo')">Efectivo</button>
+      <button class="btn btn-outline-success metodo-pago" onclick="seleccionarMetodo(this, 'Mercado Pago')">Mercado Pago</button>
+    </div>
+
+    <!-- Ruleta de la Suerte -->
+    <div class="contenedor ruleta">
+      <h4>🎲 Ruleta de la Suerte 🎲</h4>
+      <button class="btn btn-primary" onclick="girarRuleta()">Girar la Ruleta</button>
+      <p id="mensajeRuleta"></p>
+    </div>
+
+    <!-- Botón Finalizar -->
+    <div class="text-center">
+      <button class="btn btn-success btn-lg" onclick="finalizarCompra()">Finalizar Compra</button>
+      <p id="ticket" style="margin-top: 20px; font-weight: bold;"></p>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    let sabores = [];
+    let metodoPago = '';
+
+    function seleccionarSabor(elemento, sabor) {
+      if (!sabores.includes(sabor)) {
+        sabores.push(sabor);
+        elemento.classList.add('activo');
+      } else {
+        sabores = sabores.filter(s => s !== sabor);
+        elemento.classList.remove('activo');
+      }
+      document.getElementById('saboresSeleccionados').innerText = 'Sabores seleccionados: ' + (sabores.join(', ') || 'Ninguno');
+    }
+
+    function seleccionarMetodo(elemento, metodo) {
+      document.querySelectorAll('.metodo-pago').forEach(btn => btn.classList.remove('activo'));
+      elemento.classList.add('activo');
+      metodoPago = metodo;
+    }
+
+    function girarRuleta() {
+      const premios = ['¡Ganaste un 5% de descuento!', '¡Ganaste un 10% de descuento!', '¡Sigue participando!'];
+      const premio = premios[Math.floor(Math.random() * premios.length)];
+      document.getElementById('mensajeRuleta').innerText = premio;
+    }
+
+    function finalizarCompra() {
+      const tamaño = document.getElementById('tamaño').value;
+      if (sabores.length === 0 || !tamaño || !metodoPago) {
+        alert('Completa todos los campos.');
+        return;
+      }
+      const mensajeRuleta = document.getElementById('mensajeRuleta').innerText || '';
+      document.getElementById('ticket').innerHTML = `
+        <div class="alert alert-info">
+          <h5>🎟️ Tu Ticket:</h5>
+          <p><strong>Sabores:</strong> ${sabores.join(', ')}</p>
+          <p><strong>Tamaño:</strong> ${tamaño}</p>
+          <p><strong>Método de Pago:</strong> ${metodoPago}</p>
+          <p><strong>Ruleta:</strong> ${mensajeRuleta}</p>
+          <p>¡Gracias por tu compra!</p>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
